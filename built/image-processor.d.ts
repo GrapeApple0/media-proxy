@@ -1,5 +1,5 @@
-/// <reference types="node" resolution-mode="require"/>
-/// <reference types="node" resolution-mode="require"/>
+/// <reference types="node" />
+/// <reference types="node" />
 import sharp from 'sharp';
 import { Readable } from 'node:stream';
 export type IImage = {

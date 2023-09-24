@@ -1,8 +1,9 @@
 import * as fs from 'node:fs';
 import * as stream from 'node:stream';
 import * as util from 'node:util';
-import ipaddr from 'ipaddr.js';
 import got, * as Got from 'got';
+import IPCIDR from 'ip-cidr';
+import PrivateIp from 'private-ip';
 import { StatusError } from './status-error.js';
 import { getAgents } from './http.js';
 import { parse } from 'content-disposition';
@@ -94,11 +95,11 @@ export async function downloadUrl(url, path, settings = defaultDownloadConfig) {
     };
 }
 function isPrivateIp(ip, allowedPrivateNetworks) {
-    const parsedIp = ipaddr.parse(ip);
     for (const net of allowedPrivateNetworks ?? []) {
-        if (parsedIp.match(ipaddr.parseCIDR(net))) {
+        const cidr = new IPCIDR(net);
+        if (cidr.contains(ip)) {
             return false;
         }
     }
-    return parsedIp.range() !== 'unicast';
+    return PrivateIp(ip) ?? false;
 }
